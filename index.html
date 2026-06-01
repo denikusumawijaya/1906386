@@ -1060,7 +1060,279 @@ function removeItemFromZone(qId, itemId) {
   if (srcItem) srcItem.classList.remove('placed');
 }
 
-// PART 3: Fungsi Pengecekan Jawaban & Inisialisasi Akan Dilanjutkan...
+// ===== FUNGSI PENGECEKAN JAWABAN =====
+function checkAnswer(qId, q) {
+  let isCorrect = false;
+  
+  switch(q.t) {
+    case 'r': { // Radio
+      const selected = document.querySelector(`input[name="radio-${qId}"]:checked`);
+      if (selected && parseInt(selected.value) === q.a) isCorrect = true;
+      break;
+    }
+    case 'd': { // Dropdown
+      const val = document.getElementById(`sel-${qId}`).value;
+      if (val === q.a) isCorrect = true;
+      break;
+    }
+    case 't': { // Text Input
+      const input = document.getElementById(`txt-${qId}`).value.trim().toLowerCase();
+      // Bersihkan dari spasi dan tanda derajat untuk perbandingan yang fleksibel
+      const cleanInput = input.replace(/\s/g, '').replace(/°/g, '');
+      const cleanAnswer = q.a.toLowerCase().replace(/\s/g, '').replace(/°/g, '');
+      if (cleanInput === cleanAnswer) {
+        isCorrect = true;
+      } else if (q.alt) {
+        // Cek alternatif jawaban lain
+        for (let alt of q.alt) {
+          if (cleanInput === alt.toLowerCase().replace(/\s/g, '').replace(/°/g, '')) {
+            isCorrect = true;
+            break;
+          }
+        }
+      }
+      break;
+    }
+    case 'c': { // Checkbox
+      const checkedBoxes = document.querySelectorAll(`input[name="chk-${qId}"]:checked`);
+      const userAnswers = Array.from(checkedBoxes).map(cb => parseInt(cb.value)).sort();
+      const correctAnswers = [...q.a].sort();
+      if (JSON.stringify(userAnswers) === JSON.stringify(correctAnswers)) isCorrect = true;
+      break;
+    }
+    case 'dd': { // Drag & Drop
+      const state = ddState[qId];
+      if (!state) break;
+      
+      let allCorrect = true;
+      // Cek apakah semua item ditempatkan dengan benar di zona yang tepat
+      q.zones.forEach(zone => {
+        const correctItems = [...zone.correct].sort();
+        // Kumpulkan item yang ditaruh di zona ini oleh user
+        const userItems = [];
+        for (let itemId in state.placements) {
+          if (state.placements[itemId] === zone.id) {
+            userItems.push(itemId);
+          }
+        }
+        userItems.sort();
+        
+        if (JSON.stringify(userItems) !== JSON.stringify(correctItems)) {
+          allCorrect = false;
+        }
+      });
+      
+      // Pastikan juga jumlah item yang ditempatkan sesuai dengan total item
+      const totalPlaced = Object.keys(state.placements).length;
+      const totalItems = q.items.length;
+      if (totalPlaced !== totalItems) allCorrect = false;
+      
+      isCorrect = allCorrect;
+      break;
+    }
+  }
+  
+  return isCorrect;
+}
+
+function checkSection(sectionId) {
+  // Cegah submit ganda
+  if (submitted[sectionId]) {
+    showToast('Kamu sudah memeriksa bagian ini!', 'error');
+    return;
+  }
+  submitted[sectionId] = true;
+  
+  const questions = questionsData[sectionId];
+  let correctCount = 0;
+  
+  questions.forEach((q, i) => {
+    const qId = `${sectionId}-${i}`;
+    const isCorrect = checkAnswer(qId, q);
+    const qEl = document.getElementById(`qi-${qId}`);
+    const fbEl = document.getElementById(`fb-${qId}`);
+    const hintEl = document.getElementById(`hint-${qId}`);
+    
+    if (isCorrect) {
+      correctCount++;
+      qEl.classList.add('correct');
+      fbEl.innerHTML = '<i class="fas fa-check-circle" style="color:var(--success);"></i>';
+      fbEl.classList.add('show');
+    } else {
+      qEl.classList.add('incorrect');
+      fbEl.innerHTML = '<i class="fas fa-times-circle" style="color:var(--error);"></i>';
+      fbEl.classList.add('show');
+      hintEl.classList.add('show'); // Tampilkan hint jika salah
+    }
+  });
+  
+  // Tampilkan skor
+  const total = questions.length;
+  const scoreBox = document.getElementById(`score-${sectionId}`);
+  const percentage = Math.round((correctCount / total) * 100);
+  
+  let scoreClass = 'needs-work';
+  let scoreMsg = '';
+  let scoreIcon = '';
+  
+  if (percentage === 100) {
+    scoreClass = 'perfect';
+    scoreMsg = `Sempurna! ${correctCount}/${total} jawaban benar! Luar biasa!`;
+    scoreIcon = '<i class="fas fa-trophy mr-2" style="color:#F77F00;"></i>';
+    showConfetti();
+  } else if (percentage >= 70) {
+    scoreClass = 'good';
+    scoreMsg = `Bagus! ${correctCount}/${total} jawaban benar. Sedikit lagi sempurna!`;
+    scoreIcon = '<i class="fas fa-star mr-2" style="color:#F77F00;"></i>';
+  } else {
+    scoreClass = 'needs-work';
+    scoreMsg = `${correctCount}/${total} jawaban benar. Ayo pelajari lagi materinya!`;
+    scoreIcon = '<i class="fas fa-book-open mr-2"></i>';
+  }
+  
+  scoreBox.className = `score-box show ${scoreClass}`;
+  scoreBox.innerHTML = `${scoreIcon}${scoreMsg}`;
+  
+  // Scroll ke skor
+  scoreBox.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  
+  // Disable tombol submit
+  const btn = scoreBox.previousElementSibling.querySelector('.submit-btn');
+  if (btn) {
+    btn.style.opacity = '0.5';
+    btn.style.cursor = 'not-allowed';
+    btn.style.pointerEvents = 'none';
+  }
+}
+
+// ===== TOAST NOTIFICATION =====
+function showToast(message, type = 'success') {
+  const toast = document.getElementById('toast');
+  toast.textContent = message;
+  toast.className = `toast ${type}`;
+  
+  // Trigger show
+  setTimeout(() => toast.classList.add('show'), 10);
+  
+  // Auto hide
+  setTimeout(() => {
+    toast.classList.remove('show');
+  }, 3000);
+}
+
+// ===== CONFETTI ANIMATION =====
+function showConfetti() {
+  const container = document.getElementById('confetti');
+  const colors = ['#F77F00', '#FCBF49', '#2D6A4F', '#52B788', '#E63946', '#D8F3DC', '#FFEBEE'];
+  
+  for (let i = 0; i < 80; i++) {
+    const piece = document.createElement('div');
+    piece.className = 'confetti-piece';
+    piece.style.left = Math.random() * 100 + '%';
+    piece.style.background = colors[Math.floor(Math.random() * colors.length)];
+    piece.style.animationDelay = Math.random() * 1.5 + 's';
+    piece.style.animationDuration = (Math.random() * 2 + 2) + 's';
+    piece.style.width = (Math.random() * 8 + 5) + 'px';
+    piece.style.height = (Math.random() * 8 + 5) + 'px';
+    piece.style.borderRadius = Math.random() > 0.5 ? '50%' : '2px';
+    container.appendChild(piece);
+  }
+  
+  // Hapus confetti setelah animasi selesai
+  setTimeout(() => {
+    container.innerHTML = '';
+  }, 5000);
+}
+
+// ===== TAB SWITCHING =====
+function initTabs() {
+  const tabBtns = document.querySelectorAll('.tab-btn');
+  
+  tabBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      const tabId = btn.dataset.tab;
+      
+      // Hapus class active dari semua tab & panel
+      tabBtns.forEach(b => b.classList.remove('active'));
+      document.querySelectorAll('.section-panel').forEach(p => p.classList.remove('active'));
+      
+      // Aktifkan tab & panel yang diklik
+      btn.classList.add('active');
+      const panel = document.getElementById(`sec-${tabId}`);
+      if (panel) {
+        panel.classList.add('active');
+        // Trigger reveal animation untuk panel yang aktif
+        panel.querySelectorAll('.reveal').forEach(el => {
+          el.classList.add('visible');
+        });
+      }
+      
+      // Scroll ke atas konten
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+  });
+}
+
+// ===== SCROLL REVEAL ANIMATION =====
+function initReveal() {
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('visible');
+      }
+    });
+  }, { threshold: 0.1 });
+  
+  // Observe semua elemen dengan class .reveal yang ada di panel aktif
+  document.querySelectorAll('.section-panel.active .reveal').forEach(el => {
+    observer.observe(el);
+  });
+  
+  // Juga observe elemen yang muncul saat tab diganti
+  const mutationObserver = new MutationObserver((mutations) => {
+    mutations.forEach(mutation => {
+      if (mutation.target.classList.contains('active')) {
+        mutation.target.querySelectorAll('.reveal').forEach(el => {
+          observer.observe(el);
+          // Langsung visible jika sudah di viewport
+          const rect = el.getBoundingClientRect();
+          if (rect.top < window.innerHeight) {
+            el.classList.add('visible');
+          }
+        });
+      }
+    });
+  });
+  
+  document.querySelectorAll('.section-panel').forEach(panel => {
+    mutationObserver.observe(panel, { attributes: true, attributeFilter: ['class'] });
+  });
+}
+
+// ===== INISIALISASI APLIKASI =====
+function initApp() {
+  // Render semua soal untuk setiap section
+  const sections = ['sudut', 'sumbu', 'ciri', 'luas', 'segitiga'];
+  sections.forEach(sectionId => {
+    renderQuestions(sectionId);
+  });
+  
+  // Inisialisasi tab navigation
+  initTabs();
+  
+  // Inisialisasi scroll reveal
+  initReveal();
+  
+  // Langsung tampilkan reveal untuk section pertama yang aktif
+  setTimeout(() => {
+    document.querySelectorAll('.section-panel.active .reveal').forEach(el => {
+      el.classList.add('visible');
+    });
+  }, 100);
+}
+
+// Jalankan setelah DOM siap
+document.addEventListener('DOMContentLoaded', initApp);
 </script>
 </body>
 </html>
