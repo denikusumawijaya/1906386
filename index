@@ -1,0 +1,659 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Materi Bangun Datar - Kelas 4 SD</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #F0F9F0;
+  --primary: #2D6A4F;
+  --primary-dark: #1B4332;
+  --primary-light: #52B788;
+  --accent: #F77F00;
+  --accent-light: #FCBF49;
+  --card: #FFFFFF;
+  --text: #1B4332;
+  --text-light: #52796F;
+  --success: #40916C;
+  --error: #E63946;
+  --border: #B7E4C7;
+  --muted: #D8F3DC;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Nunito',sans-serif;background:var(--bg);color:var(--text);overflow-x:hidden;}
+h1,h2,h3,h4,h5{font-family:'Fredoka',sans-serif;}
+
+/* === Background Floating Shapes === */
+.bg-shapes{position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:0;overflow:hidden;}
+.bg-shapes .shape{position:absolute;opacity:0.06;animation:floatShape 20s infinite ease-in-out;}
+.bg-shapes .shape:nth-child(1){top:10%;left:5%;animation-delay:0s;}
+.bg-shapes .shape:nth-child(2){top:30%;right:10%;animation-delay:3s;}
+.bg-shapes .shape:nth-child(3){bottom:20%;left:15%;animation-delay:6s;}
+.bg-shapes .shape:nth-child(4){top:60%;right:20%;animation-delay:9s;}
+.bg-shapes .shape:nth-child(5){bottom:10%;right:5%;animation-delay:12s;}
+@keyframes floatShape{
+  0%,100%{transform:translateY(0) rotate(0deg);}
+  25%{transform:translateY(-30px) rotate(90deg);}
+  50%{transform:translateY(10px) rotate(180deg);}
+  75%{transform:translateY(-20px) rotate(270deg);}
+}
+
+/* === Hero === */
+.hero-section{
+  background:linear-gradient(135deg,var(--primary-dark) 0%,var(--primary) 50%,var(--primary-light) 100%);
+  padding:40px 20px 30px;text-align:center;position:relative;overflow:hidden;
+}
+.hero-section::before{
+  content:'';position:absolute;top:-50%;left:-50%;width:200%;height:200%;
+  background:radial-gradient(circle,rgba(252,191,73,0.1) 0%,transparent 50%);
+  animation:heroPulse 8s infinite ease-in-out;
+}
+@keyframes heroPulse{0%,100%{transform:scale(1);}50%{transform:scale(1.1);}}
+
+/* === Navigation Tabs === */
+.tab-nav{
+  display:flex;gap:4px;overflow-x:auto;padding:8px;
+  background:var(--primary-dark);border-radius:0 0 16px 16px;
+  scrollbar-width:none;position:sticky;top:0;z-index:50;
+}
+.tab-nav::-webkit-scrollbar{display:none;}
+.tab-btn{
+  flex-shrink:0;padding:10px 16px;border-radius:10px;border:none;cursor:pointer;
+  font-family:'Fredoka',sans-serif;font-size:14px;font-weight:600;
+  background:rgba(255,255,255,0.1);color:rgba(255,255,255,0.7);
+  transition:all .3s ease;white-space:nowrap;
+}
+.tab-btn:hover{background:rgba(255,255,255,0.2);color:#fff;}
+.tab-btn.active{background:var(--accent);color:#fff;transform:scale(1.05);box-shadow:0 4px 15px rgba(247,127,0,0.4);}
+.tab-btn i{margin-right:6px;}
+
+/* === Section Panels === */
+.section-panel{display:none;animation:fadeSlide .5s ease;}
+.section-panel.active{display:block;}
+@keyframes fadeSlide{from{opacity:0;transform:translateY(20px);}to{opacity:1;transform:translateY(0);}}
+
+/* === Materi Cards === */
+.materi-card{
+  background:var(--card);border-radius:20px;padding:28px;margin-bottom:20px;
+  box-shadow:0 4px 20px rgba(45,106,79,0.08);border:2px solid var(--border);
+  transition:transform .3s ease,box-shadow .3s ease;
+}
+.materi-card:hover{transform:translateY(-3px);box-shadow:0 8px 30px rgba(45,106,79,0.15);}
+.materi-card h3{color:var(--primary);margin-bottom:12px;font-size:1.25rem;}
+.materi-card h4{color:var(--accent);margin:12px 0 6px;font-size:1.05rem;}
+
+/* === Quiz Container === */
+.quiz-container{
+  background:var(--card);border-radius:20px;padding:28px;
+  border:2px solid var(--border);margin-top:24px;
+}
+.quiz-container h3{color:var(--primary);}
+
+/* === Question Item === */
+.q-item{
+  padding:18px;margin-bottom:16px;border-radius:14px;border:2px solid #E8F5E9;
+  background:#FAFFFA;transition:all .3s ease;position:relative;
+}
+.q-item:hover{border-color:var(--primary-light);}
+.q-item.correct{border-color:var(--success);background:#E8F5E9;}
+.q-item.incorrect{border-color:var(--error);background:#FFEBEE;}
+.q-num{
+  display:inline-flex;align-items:center;justify-content:center;
+  width:32px;height:32px;border-radius:50%;background:var(--primary);
+  color:#fff;font-weight:700;font-size:14px;margin-right:10px;flex-shrink:0;
+}
+.q-text{font-weight:700;margin-bottom:10px;display:flex;align-items:flex-start;gap:0;}
+.q-text span{padding-top:4px;}
+
+/* === Input Styles === */
+.q-radio,.q-checkbox{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px;}
+.q-radio label,.q-checkbox label{
+  display:flex;align-items:center;gap:8px;padding:8px 16px;
+  border-radius:10px;border:2px solid var(--border);cursor:pointer;
+  transition:all .2s ease;font-size:14px;background:#fff;
+}
+.q-radio label:hover,.q-checkbox label:hover{border-color:var(--primary-light);background:var(--muted);}
+.q-radio label:has(input:checked),.q-checkbox label:has(input:checked){
+  border-color:var(--primary);background:var(--muted);
+}
+.q-radio input:checked+span,.q-checkbox input:checked+span{color:var(--primary);font-weight:700;}
+
+.q-select{
+  padding:10px 16px;border-radius:10px;border:2px solid var(--border);
+  font-family:'Nunito',sans-serif;font-size:14px;background:#fff;
+  color:var(--text);cursor:pointer;min-width:200px;transition:border-color .2s;
+}
+.q-select:focus{outline:none;border-color:var(--primary);}
+
+.q-input{
+  padding:10px 16px;border-radius:10px;border:2px solid var(--border);
+  font-family:'Nunito',sans-serif;font-size:14px;width:160px;
+  transition:border-color .2s;text-align:center;
+}
+.q-input:focus{outline:none;border-color:var(--primary);}
+
+/* === Drag & Drop === */
+.dd-container{margin-top:12px;}
+.dd-info{font-size:12px;color:var(--text-light);margin-bottom:8px;}
+.dd-items{
+  display:flex;flex-wrap:wrap;gap:8px;padding:12px;
+  background:#F8FFF8;border-radius:12px;border:2px dashed var(--border);
+  min-height:50px;margin-bottom:12px;
+}
+.dd-item{
+  padding:8px 16px;border-radius:8px;font-size:13px;font-weight:600;
+  cursor:grab;user-select:none;transition:all .2s;border:2px solid transparent;
+}
+.dd-item:active{cursor:grabbing;}
+.dd-item.selected{border-color:var(--accent);box-shadow:0 0 0 3px rgba(247,127,0,0.2);transform:scale(1.05);}
+.dd-item.placed{opacity:0.3;pointer-events:none;}
+.dd-zones{display:flex;flex-wrap:wrap;gap:12px;}
+.dd-zone{
+  flex:1;min-width:140px;padding:12px;border-radius:12px;
+  border:2px dashed var(--border);background:#FAFAFA;text-align:center;transition:all .2s;
+}
+.dd-zone.dragover{border-color:var(--accent);background:#FFF8F0;}
+.dd-zone-label{font-weight:700;font-size:13px;color:var(--primary);margin-bottom:8px;}
+.dd-zone-slots{min-height:40px;display:flex;flex-wrap:wrap;gap:6px;justify-content:center;}
+.dd-zone-item{
+  padding:6px 12px;border-radius:6px;font-size:12px;font-weight:600;
+  cursor:pointer;transition:all .2s;border:1px solid rgba(0,0,0,0.1);
+}
+.dd-zone-item:hover{opacity:0.7;transform:scale(0.95);}
+
+/* === Hint Box === */
+.hint-box{
+  margin-top:8px;padding:10px 14px;border-radius:8px;
+  background:#FFF3E0;border-left:4px solid var(--accent);
+  font-size:13px;color:#E65100;display:none;animation:hintSlide .3s ease;
+}
+.hint-box.show{display:block;}
+@keyframes hintSlide{from{opacity:0;transform:translateX(-10px);}to{opacity:1;transform:translateX(0);}}
+
+/* === Feedback Icon === */
+.q-feedback{
+  position:absolute;top:12px;right:12px;font-size:20px;
+  display:none;animation:popIn .3s ease;
+}
+.q-feedback.show{display:block;}
+@keyframes popIn{0%{transform:scale(0);}50%{transform:scale(1.3);}100%{transform:scale(1);}}
+
+/* === Submit Button === */
+.submit-btn{
+  padding:14px 40px;border-radius:14px;border:none;cursor:pointer;
+  font-family:'Fredoka',sans-serif;font-size:18px;font-weight:600;
+  background:linear-gradient(135deg,var(--primary),var(--primary-light));
+  color:#fff;transition:all .3s;box-shadow:0 4px 15px rgba(45,106,79,0.3);
+}
+.submit-btn:hover{transform:translateY(-2px);box-shadow:0 6px 20px rgba(45,106,79,0.4);}
+.submit-btn:active{transform:translateY(0);}
+
+/* === Score Box === */
+.score-box{
+  margin-top:20px;padding:20px;border-radius:16px;text-align:center;
+  font-size:20px;font-weight:700;display:none;animation:fadeSlide .5s ease;
+}
+.score-box.show{display:block;}
+.score-box.perfect{background:linear-gradient(135deg,#E8F5E9,#C8E6C9);color:var(--primary-dark);border:2px solid var(--success);}
+.score-box.good{background:linear-gradient(135deg,#FFF8E1,#FFECB3);color:#E65100;border:2px solid var(--accent);}
+.score-box.needs-work{background:linear-gradient(135deg,#FFEBEE,#FFCDD2);color:var(--error);border:2px solid var(--error);}
+
+/* === Highlight & Formula Boxes === */
+.highlight-box{
+  background:linear-gradient(135deg,var(--muted),#C8E6C9);
+  border-radius:12px;padding:16px;margin:10px 0;border-left:5px solid var(--primary);
+}
+.formula-box{
+  background:linear-gradient(135deg,#FFF8E1,#FFECB3);
+  border-radius:12px;padding:14px;margin:8px 0;text-align:center;
+  border:2px solid var(--accent-light);font-weight:700;font-size:16px;color:var(--primary-dark);
+}
+
+/* === SVG Illustration === */
+.svg-illust{display:flex;justify-content:center;margin:16px 0;}
+.svg-illust svg{max-width:100%;}
+
+/* === Toast === */
+.toast{
+  position:fixed;bottom:30px;left:50%;transform:translateX(-50%) translateY(100px);
+  padding:14px 28px;border-radius:14px;font-weight:700;font-size:15px;
+  z-index:10000;transition:transform .4s ease;box-shadow:0 8px 30px rgba(0,0,0,0.2);
+}
+.toast.show{transform:translateX(-50%) translateY(0);}
+.toast.success{background:var(--success);color:#fff;}
+.toast.error{background:var(--error);color:#fff;}
+
+/* === Confetti === */
+.confetti-container{position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:9999;}
+.confetti-piece{
+  position:absolute;width:10px;height:10px;opacity:0;
+  animation:confettiFall 3s ease-out forwards;
+}
+@keyframes confettiFall{
+  0%{opacity:1;transform:translateY(-100px) rotate(0deg);}
+  100%{opacity:0;transform:translateY(100vh) rotate(720deg);}
+}
+
+/* === Scrollbar === */
+::-webkit-scrollbar{width:8px;}
+::-webkit-scrollbar-track{background:var(--muted);}
+::-webkit-scrollbar-thumb{background:var(--primary-light);border-radius:4px;}
+::-webkit-scrollbar-thumb:hover{background:var(--primary);}
+
+/* === Reveal Animation === */
+.reveal{opacity:0;transform:translateY(30px);transition:all .6s ease;}
+.reveal.visible{opacity:1;transform:translateY(0);}
+
+/* === Responsive === */
+@media(max-width:640px){
+  .tab-btn{padding:8px 12px;font-size:12px;}
+  .materi-card,.quiz-container{padding:18px;}
+  .q-item{padding:14px;}
+  .dd-zones{flex-direction:column;}
+  .dd-zone{min-width:auto;}
+  .hero-section{padding:28px 16px 20px;}
+}
+</style>
+</head>
+<body>
+
+<!-- ===== Background Floating Shapes ===== -->
+<div class="bg-shapes">
+  <div class="shape"><svg width="80" height="80"><polygon points="40,5 75,70 5,70" fill="#2D6A4F"/></svg></div>
+  <div class="shape"><svg width="70" height="70"><rect x="10" y="10" width="50" height="50" rx="8" fill="#F77F00"/></svg></div>
+  <div class="shape"><svg width="90" height="90"><circle cx="45" cy="45" r="35" fill="#52B788"/></svg></div>
+  <div class="shape"><svg width="80" height="80"><polygon points="40,5 75,25 75,60 40,75 5,60 5,25" fill="#FCBF49"/></svg></div>
+  <div class="shape"><svg width="70" height="70"><polygon points="35,5 65,35 35,65 5,35" fill="#2D6A4F"/></svg></div>
+</div>
+
+<!-- ===== Hero Section ===== -->
+<header class="hero-section relative z-10">
+  <h1 class="text-3xl md:text-5xl font-bold text-white mb-3 relative z-10">
+    <i class="fas fa-shapes mr-2" style="color:#FCBF49;"></i>Bangun Datar
+  </h1>
+  <p class="text-green-100 text-lg md:text-xl relative z-10 mb-1">Materi dan Latihan Soal - Kelas 4 SD</p>
+  <p class="text-green-200 text-sm relative z-10">5 Topik &bull; 100 Soal Interaktif</p>
+</header>
+
+<!-- ===== Navigation Tabs ===== -->
+<nav class="tab-nav">
+  <button class="tab-btn active" data-tab="sudut"><i class="fas fa-drafting-compass"></i>Sudut</button>
+  <button class="tab-btn" data-tab="sumbu"><i class="fas fa-arrows-left-right"></i>Sumbu Simetri</button>
+  <button class="tab-btn" data-tab="ciri"><i class="fas fa-vector-square"></i>Ciri Bangun</button>
+  <button class="tab-btn" data-tab="luas"><i class="fas fa-ruler-combined"></i>Luas &amp; Keliling</button>
+  <button class="tab-btn" data-tab="segitiga"><i class="fas fa-play"></i>Jenis Segitiga</button>
+</nav>
+
+<!-- ===== Main Content ===== -->
+<main class="max-w-4xl mx-auto px-4 py-6 relative z-10">
+
+  <!-- ============================================ -->
+  <!--          SECTION 1: SUDUT                    -->
+  <!-- ============================================ -->
+  <div class="section-panel active" id="sec-sudut">
+    <div class="materi-card reveal">
+      <h3><i class="fas fa-drafting-compass mr-2" style="color:var(--accent);"></i>Pengertian Sudut</h3>
+      <p>Sudut adalah daerah yang dibentuk oleh dua garis yang bertemu di satu titik (titik sudut). Besar sudut diukur dalam satuan derajat (°).</p>
+      <div class="svg-illust">
+        <svg width="280" height="120" viewBox="0 0 280 120">
+          <line x1="40" y1="100" x2="240" y2="100" stroke="#2D6A4F" stroke-width="3"/>
+          <line x1="40" y1="100" x2="180" y2="30" stroke="#F77F00" stroke-width="3"/>
+          <circle cx="40" cy="100" r="5" fill="#E63946"/>
+          <path d="M80,100 A40,40 0 0,0 65,72" fill="none" stroke="#E63946" stroke-width="2"/>
+          <text x="90" y="80" font-size="13" fill="#E63946" font-weight="bold">sudut</text>
+          <text x="20" y="118" font-size="11" fill="#1B4332">titik sudut</text>
+          <text x="200" y="98" font-size="11" fill="#2D6A4F">kaki sudut</text>
+        </svg>
+      </div>
+    </div>
+
+    <div class="materi-card reveal">
+      <h3><i class="fas fa-list-ol mr-2" style="color:var(--accent);"></i>Jenis-Jenis Sudut</h3>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-3">
+        <div class="highlight-box">
+          <h4 style="color:var(--primary);margin:0 0 4px;"><i class="fas fa-angle-right mr-1"></i>Sudut Lancip</h4>
+          <p class="text-sm">Besarnya antara 0° dan 90° (kurang dari 90°)</p>
+          <div class="svg-illust" style="margin:8px 0 0">
+            <svg width="100" height="70" viewBox="0 0 100 70">
+              <line x1="10" y1="60" x2="90" y2="60" stroke="#2D6A4F" stroke-width="2"/>
+              <line x1="10" y1="60" x2="50" y2="20" stroke="#F77F00" stroke-width="2"/>
+              <path d="M30,60 A20,20 0 0,0 25,48" fill="none" stroke="#E63946" stroke-width="2"/>
+              <text x="33" y="52" font-size="10" fill="#E63946">&lt;90°</text>
+            </svg>
+          </div>
+        </div>
+        <div class="highlight-box">
+          <h4 style="color:var(--primary);margin:0 0 4px;"><i class="fas fa-square mr-1"></i>Sudut Siku-Siku</h4>
+          <p class="text-sm">Besarnya tepat 90°</p>
+          <div class="svg-illust" style="margin:8px 0 0">
+            <svg width="100" height="70" viewBox="0 0 100 70">
+              <line x1="10" y1="60" x2="90" y2="60" stroke="#2D6A4F" stroke-width="2"/>
+              <line x1="10" y1="60" x2="10" y2="10" stroke="#F77F00" stroke-width="2"/>
+              <rect x="10" y="45" width="15" height="15" fill="none" stroke="#E63946" stroke-width="2"/>
+              <text x="30" y="40" font-size="10" fill="#E63946">90°</text>
+            </svg>
+          </div>
+        </div>
+        <div class="highlight-box">
+          <h4 style="color:var(--primary);margin:0 0 4px;"><i class="fas fa-angle-left mr-1"></i>Sudut Tumpul</h4>
+          <p class="text-sm">Besarnya antara 90° dan 180° (lebih dari 90°)</p>
+          <div class="svg-illust" style="margin:8px 0 0">
+            <svg width="100" height="70" viewBox="0 0 100 70">
+              <line x1="10" y1="60" x2="90" y2="60" stroke="#2D6A4F" stroke-width="2"/>
+              <line x1="10" y1="60" x2="90" y2="25" stroke="#F77F00" stroke-width="2"/>
+              <path d="M30,60 A20,20 0 0,0 38,44" fill="none" stroke="#E63946" stroke-width="2"/>
+              <text x="40" y="52" font-size="10" fill="#E63946">&gt;90°</text>
+            </svg>
+          </div>
+        </div>
+        <div class="highlight-box">
+          <h4 style="color:var(--primary);margin:0 0 4px;"><i class="fas fa-arrows-left-right mr-1"></i>Sudut Lurus</h4>
+          <p class="text-sm">Besarnya tepat 180°</p>
+          <div class="svg-illust" style="margin:8px 0 0">
+            <svg width="100" height="40" viewBox="0 0 100 40">
+              <line x1="5" y1="25" x2="95" y2="25" stroke="#2D6A4F" stroke-width="2"/>
+              <circle cx="50" cy="25" r="4" fill="#E63946"/>
+              <text x="40" y="18" font-size="10" fill="#E63946">180°</text>
+            </svg>
+          </div>
+        </div>
+      </div>
+      <div class="highlight-box mt-3" style="border-left-color:var(--accent);">
+        <h4 style="color:var(--accent);margin:0 0 4px;"><i class="fas fa-circle mr-1"></i>Sudut Penuh</h4>
+        <p class="text-sm">Besarnya tepat 360° (satu putaran penuh)</p>
+      </div>
+    </div>
+
+    <!-- Quiz Sudut -->
+    <div class="quiz-container reveal">
+      <h3 class="text-xl mb-4"><i class="fas fa-pen-to-square mr-2" style="color:var(--accent);"></i>Latihan Soal Sudut</h3>
+      <div id="questions-sudut"></div>
+      <div class="text-center mt-6">
+        <button class="submit-btn" onclick="checkSection('sudut')"><i class="fas fa-check mr-2"></i>Periksa Jawaban</button>
+      </div>
+      <div class="score-box" id="score-sudut"></div>
+    </div>
+  </div>
+
+  <!-- ============================================ -->
+  <!--       SECTION 2: SUMBU SIMETRI               -->
+  <!-- ============================================ -->
+  <div class="section-panel" id="sec-sumbu">
+    <div class="materi-card reveal">
+      <h3><i class="fas fa-arrows-left-right mr-2" style="color:var(--accent);"></i>Pengertian Sumbu Simetri</h3>
+      <p>Sumbu simetri adalah garis lurus yang membagi suatu bangun datar menjadi dua bagian yang sama dan simetris (seperti bayangan cermin).</p>
+      <div class="svg-illust">
+        <svg width="300" height="140" viewBox="0 0 300 140">
+          <!-- Persegi dengan 1 sumbu -->
+          <rect x="30" y="25" width="80" height="80" rx="4" fill="#D8F3DC" stroke="#2D6A4F" stroke-width="2"/>
+          <line x1="70" y1="15" x2="70" y2="115" stroke="#E63946" stroke-width="2" stroke-dasharray="6,3"/>
+          <text x="45" y="130" font-size="11" fill="#E63946" font-weight="bold">1 sumbu</text>
+          <text x="40" y="10" font-size="10" fill="#1B4332">Persegi</text>
+          <!-- Persegi dengan 2 sumbu -->
+          <rect x="160" y="25" width="80" height="80" rx="4" fill="#D8F3DC" stroke="#2D6A4F" stroke-width="2"/>
+          <line x1="200" y1="15" x2="200" y2="115" stroke="#E63946" stroke-width="2" stroke-dasharray="6,3"/>
+          <line x1="155" y1="65" x2="245" y2="65" stroke="#E63946" stroke-width="2" stroke-dasharray="6,3"/>
+          <text x="175" y="130" font-size="11" fill="#E63946" font-weight="bold">2 sumbu</text>
+          <text x="170" y="10" font-size="10" fill="#1B4332">Persegi Panjang</text>
+        </svg>
+      </div>
+    </div>
+
+    <div class="materi-card reveal">
+      <h3><i class="fas fa-table mr-2" style="color:var(--accent);"></i>Jumlah Sumbu Simetri Bangun Datar</h3>
+      <div class="grid grid-cols-2 md:grid-cols-3 gap-3 mt-3">
+        <div class="formula-box"><span style="font-size:13px;color:var(--text-light);">Persegi</span><br>4</div>
+        <div class="formula-box"><span style="font-size:13px;color:var(--text-light);">Persegi Panjang</span><br>2</div>
+        <div class="formula-box"><span style="font-size:13px;color:var(--text-light);">Segitiga Sama Sisi</span><br>3</div>
+        <div class="formula-box"><span style="font-size:13px;color:var(--text-light);">Segitiga Sama Kaki</span><br>1</div>
+        <div class="formula-box"><span style="font-size:13px;color:var(--text-light);">Belah Ketupat</span><br>2</div>
+        <div class="formula-box"><span style="font-size:13px;color:var(--text-light);">Layang-layang</span><br>1</div>
+        <div class="formula-box"><span style="font-size:13px;color:var(--text-light);">Lingkaran</span><br>Tak Terhingga</div>
+        <div class="formula-box"><span style="font-size:13px;color:var(--text-light);">Jajar Genjang</span><br>0</div>
+        <div class="formula-box"><span style="font-size:13px;color:var(--text-light);">Trapesium Sama Kaki</span><br>1</div>
+      </div>
+    </div>
+
+    <!-- Quiz Sumbu -->
+    <div class="quiz-container reveal">
+      <h3 class="text-xl mb-4"><i class="fas fa-pen-to-square mr-2" style="color:var(--accent);"></i>Latihan Soal Sumbu Simetri</h3>
+      <div id="questions-sumbu"></div>
+      <div class="text-center mt-6">
+        <button class="submit-btn" onclick="checkSection('sumbu')"><i class="fas fa-check mr-2"></i>Periksa Jawaban</button>
+      </div>
+      <div class="score-box" id="score-sumbu"></div>
+    </div>
+  </div>
+
+  <!-- ============================================ -->
+  <!--       SECTION 3: CIRI BANGUN DATAR           -->
+  <!-- ============================================ -->
+  <div class="section-panel" id="sec-ciri">
+    <div class="materi-card reveal">
+      <h3><i class="fas fa-vector-square mr-2" style="color:var(--accent);"></i>Ciri-Ciri Bangun Datar</h3>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-3">
+        <div class="highlight-box">
+          <h4 style="margin:0 0 6px;color:var(--primary);">Persegi</h4>
+          <ul class="text-sm list-disc ml-4">
+            <li>4 sisi sama panjang</li>
+            <li>4 sudut siku-siku</li>
+            <li>2 diagonal sama panjang</li>
+            <li>4 sumbu simetri</li>
+          </ul>
+        </div>
+        <div class="highlight-box">
+          <h4 style="margin:0 0 6px;color:var(--primary);">Persegi Panjang</h4>
+          <ul class="text-sm list-disc ml-4">
+            <li>Sisi berhadapan sama panjang</li>
+            <li>4 sudut siku-siku</li>
+            <li>2 diagonal sama panjang</li>
+            <li>2 sumbu simetri</li>
+          </ul>
+        </div>
+        <div class="highlight-box">
+          <h4 style="margin:0 0 6px;color:var(--primary);">Belah Ketupat</h4>
+          <ul class="text-sm list-disc ml-4">
+            <li>4 sisi sama panjang</li>
+            <li>Sudut berhadapan sama besar</li>
+            <li>Diagonal saling tegak lurus</li>
+            <li>2 sumbu simetri</li>
+          </ul>
+        </div>
+        <div class="highlight-box">
+          <h4 style="margin:0 0 6px;color:var(--primary);">Layang-layang</h4>
+          <ul class="text-sm list-disc ml-4">
+            <li>2 pasang sisi berdekatan sama panjang</li>
+            <li>1 diagonal membagi 2 sama panjang</li>
+            <li>Diagonal saling tegak lurus</li>
+            <li>1 sumbu simetri</li>
+          </ul>
+        </div>
+        <div class="highlight-box">
+          <h4 style="margin:0 0 6px;color:var(--primary);">Jajar Genjang</h4>
+          <ul class="text-sm list-disc ml-4">
+            <li>Sisi berhadapan sejajar dan sama panjang</li>
+            <li>Sudut berhadapan sama besar</li>
+            <li>Diagonal saling membagi dua</li>
+            <li>0 sumbu simetri</li>
+          </ul>
+        </div>
+        <div class="highlight-box">
+          <h4 style="margin:0 0 6px;color:var(--primary);">Trapesium</h4>
+          <ul class="text-sm list-disc ml-4">
+            <li>4 sisi</li>
+            <li>Tepat 1 pasang sisi sejajar</li>
+            <li>Trapesium sama kaki: 1 sumbu simetri</li>
+            <li>Trapesium sembarang: 0 sumbu simetri</li>
+          </ul>
+        </div>
+      </div>
+      <div class="highlight-box mt-3">
+        <h4 style="margin:0 0 6px;color:var(--primary);">Lingkaran</h4>
+        <ul class="text-sm list-disc ml-4">
+          <li>Tidak memiliki sudut</li>
+          <li>Tidak memiliki sisi</li>
+          <li>Memiliki jari-jari (r) dan diameter (d = 2r)</li>
+          <li>Sumbu simetri tak terhingga</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Quiz Ciri -->
+    <div class="quiz-container reveal">
+      <h3 class="text-xl mb-4"><i class="fas fa-pen-to-square mr-2" style="color:var(--accent);"></i>Latihan Soal Ciri Bangun Datar</h3>
+      <div id="questions-ciri"></div>
+      <div class="text-center mt-6">
+        <button class="submit-btn" onclick="checkSection('ciri')"><i class="fas fa-check mr-2"></i>Periksa Jawaban</button>
+      </div>
+      <div class="score-box" id="score-ciri"></div>
+    </div>
+  </div>
+
+  <!-- ============================================ -->
+  <!--       SECTION 4: LUAS & KELILING             -->
+  <!-- ============================================ -->
+  <div class="section-panel" id="sec-luas">
+    <div class="materi-card reveal">
+      <h3><i class="fas fa-ruler-combined mr-2" style="color:var(--accent);"></i>Rumus Luas dan Keliling Bangun Datar</h3>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-3 mt-3">
+        <div class="formula-box">Persegi<br><span style="font-size:14px;">L = s × s<br>K = 4 × s</span></div>
+        <div class="formula-box">Persegi Panjang<br><span style="font-size:14px;">L = p × l<br>K = 2 × (p + l)</span></div>
+        <div class="formula-box">Segitiga<br><span style="font-size:14px;">L = ½ × a × t<br>K = sisi₁ + sisi₂ + sisi₃</span></div>
+        <div class="formula-box">Lingkaran<br><span style="font-size:14px;">L = π × r × r<br>K = 2 × π × r</span></div>
+        <div class="formula-box">Belah Ketupat<br><span style="font-size:14px;">L = ½ × d₁ × d₂<br>K = 4 × s</span></div>
+        <div class="formula-box">Layang-layang<br><span style="font-size:14px;">L = ½ × d₁ × d₂<br>K = 2 × (a + b)</span></div>
+        <div class="formula-box">Jajar Genjang<br><span style="font-size:14px;">L = a × t<br>K = 2 × (a + b)</span></div>
+        <div class="formula-box">Trapesium<br><span style="font-size:14px;">L = ½ × (a + b) × t<br>K = jumlah semua sisi</span></div>
+      </div>
+      <div class="highlight-box mt-3" style="border-left-color:var(--accent);">
+        <p class="text-sm"><strong>Keterangan:</strong> L = Luas, K = Keliling, s = sisi, p = panjang, l = lebar, a = alas, t = tinggi, d = diameter, r = jari-jari, π ≈ 22/7 atau 3,14</p>
+      </div>
+    </div>
+
+    <!-- Quiz Luas -->
+    <div class="quiz-container reveal">
+      <h3 class="text-xl mb-4"><i class="fas fa-pen-to-square mr-2" style="color:var(--accent);"></i>Latihan Soal Luas dan Keliling</h3>
+      <div id="questions-luas"></div>
+      <div class="text-center mt-6">
+        <button class="submit-btn" onclick="checkSection('luas')"><i class="fas fa-check mr-2"></i>Periksa Jawaban</button>
+      </div>
+      <div class="score-box" id="score-luas"></div>
+    </div>
+  </div>
+
+  <!-- ============================================ -->
+  <!--       SECTION 5: JENIS SEGITIGA              -->
+  <!-- ============================================ -->
+  <div class="section-panel" id="sec-segitiga">
+    <div class="materi-card reveal">
+      <h3><i class="fas fa-play mr-2" style="color:var(--accent);"></i>Jenis-Jenis Segitiga Berdasarkan Sisi</h3>
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-3">
+        <div class="highlight-box text-center">
+          <div class="svg-illust">
+            <svg width="100" height="90" viewBox="0 0 100 90">
+              <polygon points="50,10 90,80 10,80" fill="#D8F3DC" stroke="#2D6A4F" stroke-width="2"/>
+              <line x1="50" y1="10" x2="50" y2="80" stroke="#E63946" stroke-width="1" stroke-dasharray="4,3"/>
+              <text x="55" y="50" font-size="9" fill="#2D6A4F">sama</text>
+              <text x="20" y="50" font-size="9" fill="#2D6A4F">sama</text>
+            </svg>
+          </div>
+          <h4 style="color:var(--primary);margin:4px 0;">Sama Sisi</h4>
+          <p class="text-sm">3 sisi sama panjang, 3 sudut sama besar (60°)</p>
+        </div>
+        <div class="highlight-box text-center">
+          <div class="svg-illust">
+            <svg width="100" height="90" viewBox="0 0 100 90">
+              <polygon points="50,10 90,80 10,80" fill="#FFF3E0" stroke="#F77F00" stroke-width="2"/>
+              <text x="15" y="76" font-size="9" fill="#F77F00">sama</text>
+              <text x="65" y="76" font-size="9" fill="#F77F00">sama</text>
+            </svg>
+          </div>
+          <h4 style="color:var(--accent);margin:4px 0;">Sama Kaki</h4>
+          <p class="text-sm">2 sisi sama panjang, 2 sudut sama besar</p>
+        </div>
+        <div class="highlight-box text-center">
+          <div class="svg-illust">
+            <svg width="100" height="90" viewBox="0 0 100 90">
+              <polygon points="30,10 95,80 5,80" fill="#FFEBEE" stroke="#E63946" stroke-width="2"/>
+              <text x="15" y="76" font-size="9" fill="#E63946">a</text>
+              <text x="60" y="76" font-size="9" fill="#E63946">b</text>
+              <text x="18" y="30" font-size="9" fill="#E63946">c</text>
+            </svg>
+          </div>
+          <h4 style="color:var(--error);margin:4px 0;">Sembarang</h4>
+          <p class="text-sm">3 sisi berbeda panjang, 3 sudut berbeda</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="materi-card reveal">
+      <h3><i class="fas fa-play mr-2" style="color:var(--accent);"></i>Jenis-Jenis Segitiga Berdasarkan Sudut</h3>
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-3">
+        <div class="highlight-box text-center">
+          <div class="svg-illust">
+            <svg width="90" height="70" viewBox="0 0 90 70">
+              <polygon points="20,60 80,60 50,15" fill="#D8F3DC" stroke="#2D6A4F" stroke-width="2"/>
+              <path d="M35,60 A15,15 0 0,0 33,51" fill="none" stroke="#E63946" stroke-width="1.5"/>
+            </svg>
+          </div>
+          <h4 style="color:var(--primary);margin:4px 0;">Lancip</h4>
+          <p class="text-sm">Semua sudut &lt; 90°</p>
+        </div>
+        <div class="highlight-box text-center">
+          <div class="svg-illust">
+            <svg width="90" height="70" viewBox="0 0 90 70">
+              <polygon points="10,60 80,60 10,10" fill="#FFF3E0" stroke="#F77F00" stroke-width="2"/>
+              <rect x="10" y="45" width="12" height="12" fill="none" stroke="#E63946" stroke-width="1.5"/>
+            </svg>
+          </div>
+          <h4 style="color:var(--accent);margin:4px 0;">Siku-Siku</h4>
+          <p class="text-sm">Ada 1 sudut tepat 90°</p>
+        </div>
+        <div class="highlight-box text-center">
+          <div class="svg-illust">
+            <svg width="90" height="70" viewBox="0 0 90 70">
+              <polygon points="10,60 80,60 70,10" fill="#FFEBEE" stroke="#E63946" stroke-width="2"/>
+              <path d="M25,60 A15,15 0 0,0 32,46" fill="none" stroke="#E63946" stroke-width="1.5"/>
+            </svg>
+          </div>
+          <h4 style="color:var(--error);margin:4px 0;">Tumpul</h4>
+          <p class="text-sm">Ada 1 sudut &gt; 90°</p>
+        </div>
+      </div>
+      <div class="formula-box mt-4">Jumlah ketiga sudut dalam segitiga selalu = 180°</div>
+    </div>
+
+    <!-- Quiz Segitiga -->
+    <div class="quiz-container reveal">
+      <h3 class="text-xl mb-4"><i class="fas fa-pen-to-square mr-2" style="color:var(--accent);"></i>Latihan Soal Jenis Segitiga</h3>
+      <div id="questions-segitiga"></div>
+      <div class="text-center mt-6">
+        <button class="submit-btn" onclick="checkSection('segitiga')"><i class="fas fa-check mr-2"></i>Periksa Jawaban</button>
+      </div>
+      <div class="score-box" id="score-segitiga"></div>
+    </div>
+  </div>
+
+</main>
+
+<!-- Footer -->
+<footer class="text-center py-6 text-sm relative z-10" style="color:var(--text-light);">
+  <p><i class="fas fa-graduation-cap mr-1"></i> Materi Bangun Datar - Kelas 4 SD</p>
+</footer>
+
+<!-- Toast -->
+<div class="toast" id="toast"></div>
+
+<!-- Confetti Container -->
+<div class="confetti-container" id="confetti"></div>
+
+<!-- === SCRIPT akan dilanjutkan di Part 2 === -->
+<script>
+// PART 2: Data Soal & Rendering akan dimulai di sini
+</script>
+</body>
+</html>
