@@ -651,9 +651,416 @@ h1,h2,h3,h4,h5{font-family:'Fredoka',sans-serif;}
 <!-- Confetti Container -->
 <div class="confetti-container" id="confetti"></div>
 
-<!-- === SCRIPT akan dilanjutkan di Part 2 === -->
 <script>
-// PART 2: Data Soal & Rendering akan dimulai di sini
+// ===== DATA 100 SOAL =====
+const questionsData = {
+  sudut: [
+    {t:'r', q:'Sudut yang besarnya tepat 90° disebut sudut...', o:['Lancip','Siku-siku','Tumpul','Lurus'], a:1, h:'Sudut siku-siku = 90°. Ingat sudut pada pojok meja!'},
+    {t:'r', q:'Sudut yang besarnya kurang dari 90° disebut sudut...', o:['Lancip','Siku-siku','Tumpul','Lurus'], a:0, h:'Sudut lancip besarnya antara 0° sampai 90° (kurang dari 90°).'},
+    {t:'r', q:'Sudut yang besarnya lebih dari 90° tetapi kurang dari 180° disebut sudut...', o:['Lancip','Siku-siku','Tumpul','Lurus'], a:2, h:'Sudut tumpul besarnya antara 90° dan 180°.'},
+    {t:'d', q:'Sudut yang besarnya tepat 180° disebut sudut...', o:['-- Pilih --','Lancip','Siku-siku','Tumpul','Lurus','Penuh'], a:'Lurus', h:'Sudut lurus = 180°, terlihat seperti garis lurus.'},
+    {t:'t', q:'Berapa derajat sudut siku-siku?', a:'90', alt:['90°'], h:'Sudut siku-siku selalu 90°.'},
+    {t:'c', q:'Manakah yang termasuk sudut lancip? (pilih lebih dari satu)', o:['30°','45°','120°','60°','150°'], a:[0,1,3], h:'Sudut lancip kurang dari 90°. Jadi 30°, 45°, dan 60° adalah lancip.'},
+    {t:'r', q:'Sudut pada pojok buku tulis biasanya berbentuk sudut...', o:['Lancip','Siku-siku','Tumpul','Lurus'], a:1, h:'Pojok buku tulis membentuk sudut 90° = siku-siku.'},
+    {t:'d', q:'Sudut 120° termasuk jenis sudut...', o:['-- Pilih --','Lancip','Siku-siku','Tumpul','Lurus'], a:'Tumpul', h:'120° lebih dari 90° dan kurang dari 180°, jadi termasuk sudut tumpul.'},
+    {t:'t', q:'Sudut 45° + sudut 45° = ...°', a:'90', alt:['90°'], h:'45 + 45 = 90. Jadi hasilnya sudut siku-siku.'},
+    {t:'r', q:'Jarum jam menunjukkan pukul 03:00. Sudut yang terbentuk adalah...', o:['Sudut lancip','Sudut siku-siku','Sudut tumpul','Sudut lurus'], a:1, h:'Jarum jam 03:00 membentuk sudut 90° = siku-siku.'},
+    {t:'c', q:'Manakah yang termasuk sudut tumpul? (pilih lebih dari satu)', o:['95°','100°','89°','120°','45°'], a:[0,1,3], h:'Sudut tumpul lebih dari 90° dan kurang dari 180°. Jadi 95°, 100°, dan 120°.'},
+    {t:'d', q:'Sudut 360° disebut sudut...', o:['-- Pilih --','Lancip','Siku-siku','Tumpul','Lurus','Penuh'], a:'Penuh', h:'Sudut penuh = 360° = satu putaran lengkap.'},
+    {t:'t', q:'Berapa derajat setengah lingkaran?', a:'180', alt:['180°'], h:'Setengah lingkaran = 360° ÷ 2 = 180°.'},
+    {t:'r', q:'Besar setiap sudut pada segitiga sama sisi adalah...', o:['45°','60°','90°','120°'], a:1, h:'Segitiga sama sisi: 180° ÷ 3 = 60° setiap sudutnya.'},
+    {t:'dd', q:'Pasangkan nama sudut dengan besarannya!', items:[
+      {id:'a1',text:'Sudut Lancip',bg:'#D8F3DC',color:'#2D6A4F'},
+      {id:'a2',text:'Sudut Siku-siku',bg:'#FFF3E0',color:'#F77F00'},
+      {id:'a3',text:'Sudut Tumpul',bg:'#FFEBEE',color:'#E63946'},
+      {id:'a4',text:'Sudut Lurus',bg:'#E3F2FD',color:'#1565C0'}
+    ], zones:[
+      {id:'z1',label:'Kurang dari 90°',correct:['a1']},
+      {id:'z2',label:'Tepat 90°',correct:['a2']},
+      {id:'z3',label:'Antara 90° dan 180°',correct:['a3']},
+      {id:'z4',label:'Tepat 180°',correct:['a4']}
+    ], h:'Lancip < 90°, Siku-siku = 90°, Tumpul antara 90°-180°, Lurus = 180°.'},
+    {t:'r', q:'Garis yang membentuk sudut siku-siku saling...', o:['Sejajar','Tegak lurus','Berimpit','Berpotongan miring'], a:1, h:'Sudut siku-siku terbentuk oleh dua garis yang saling tegak lurus.'},
+    {t:'t', q:'Jumlah semua sudut dalam segiempat adalah ...°', a:'360', alt:['360°'], h:'Jumlah sudut dalam segiempat selalu 360°.'},
+    {t:'d', q:'Sudut 89° termasuk sudut...', o:['-- Pilih --','Lancip','Siku-siku','Tumpul','Lurus'], a:'Lancip', h:'89° masih kurang dari 90°, jadi termasuk sudut lancip.'},
+    {t:'c', q:'Manakah sudut yang kurang dari 180°? (pilih lebih dari satu)', o:['Sudut lancip','Sudut siku-siku','Sudut tumpul','Sudut lurus'], a:[0,1,2], h:'Lancip (< 90°), siku-siku (= 90°), tumpul (90°-180°) semuanya < 180°. Sudut lurus = 180°.'},
+    {t:'dd', q:'Kelompokkan sudut berdasarkan jenisnya!', items:[
+      {id:'b1',text:'45°',bg:'#D8F3DC',color:'#2D6A4F'},
+      {id:'b2',text:'90°',bg:'#FFF3E0',color:'#F77F00'},
+      {id:'b3',text:'135°',bg:'#FFEBEE',color:'#E63946'},
+      {id:'b4',text:'70°',bg:'#D8F3DC',color:'#2D6A4F'},
+      {id:'b5',text:'110°',bg:'#FFEBEE',color:'#E63946'}
+    ], zones:[
+      {id:'z1',label:'Lancip',correct:['b1','b4']},
+      {id:'z2',label:'Siku-siku',correct:['b2']},
+      {id:'z3',label:'Tumpul',correct:['b3','b5']}
+    ], h:'Lancip < 90°, Siku-siku = 90°, Tumpul > 90° dan < 180°.'}
+  ],
+
+  sumbu: [
+    {t:'r', q:'Jumlah sumbu simetri persegi adalah...', o:['1','2','3','4'], a:3, h:'Persegi memiliki 4 sumbu simetri (2 diagonal + 2 garis tengah).'},
+    {t:'r', q:'Jumlah sumbu simetri persegi panjang adalah...', o:['0','1','2','4'], a:2, h:'Persegi panjang memiliki 2 sumbu simetri (2 garis tengah).'},
+    {t:'d', q:'Jumlah sumbu simetri segitiga sama sisi adalah...', o:['-- Pilih --','0','1','2','3','4'], a:'3', h:'Segitiga sama sisi memiliki 3 sumbu simetri.'},
+    {t:'t', q:'Jumlah sumbu simetri lingkaran adalah... (tuliskan "tak terhingga")', a:'tak terhingga', alt:['Tak Terhingga','TAK TERHINGGA','∞','banyak'], h:'Lingkaran memiliki sumbu simetri tak terhingga (setiap garis diameter).'},
+    {t:'c', q:'Bangun yang memiliki sumbu simetri lebih dari 1? (pilih lebih dari satu)', o:['Persegi','Persegi panjang','Segitiga sama sisi','Jajar genjang'], a:[0,1,2], h:'Persegi (4), Persegi panjang (2), Segitiga sama sisi (3). Jajar genjang = 0.'},
+    {t:'r', q:'Jumlah sumbu simetri belah ketupat adalah...', o:['0','1','2','4'], a:2, h:'Belah ketupat memiliki 2 sumbu simetri (kedua diagonalnya).'},
+    {t:'d', q:'Jumlah sumbu simetri layang-layang adalah...', o:['-- Pilih --','0','1','2','4'], a:'1', h:'Layang-layang memiliki 1 sumbu simetri (diagonal yang membagi dua sama panjang).'},
+    {t:'t', q:'Jumlah sumbu simetri segitiga sama kaki adalah...', a:'1', alt:['satu'], h:'Segitiga sama kaki memiliki 1 sumbu simetri.'},
+    {t:'r', q:'Bangun datar yang TIDAK memiliki sumbu simetri adalah...', o:['Persegi','Layang-layang','Jajar genjang','Segitiga sama kaki'], a:2, h:'Jajar genjang tidak memiliki sumbu simetri (0 sumbu simetri).'},
+    {t:'c', q:'Bangun yang memiliki sumbu simetri? (pilih lebih dari satu)', o:['Persegi','Jajar genjang','Lingkaran','Segitiga sembarang'], a:[0,2], h:'Persegi (4) dan lingkaran (tak terhingga) punya sumbu simetri. Jajar genjang & segitiga sembarang = 0.'},
+    {t:'r', q:'Jumlah sumbu simetri trapesium sama kaki adalah...', o:['0','1','2','4'], a:1, h:'Trapesium sama kaki memiliki 1 sumbu simetri.'},
+    {t:'d', q:'Bangun datar yang paling banyak sumbu simetrinya adalah...', o:['-- Pilih --','Persegi','Segitiga sama sisi','Lingkaran','Belah ketupat'], a:'Lingkaran', h:'Lingkaran memiliki sumbu simetri tak terhingga, paling banyak!'},
+    {t:'t', q:'Jumlah sumbu simetri segitiga sembarang adalah...', a:'0', alt:['nol','tidak ada'], h:'Segitiga sembarang tidak memiliki sumbu simetri (0).'},
+    {t:'dd', q:'Pasangkan bangun datar dengan jumlah sumbu simetrinya!', items:[
+      {id:'c1',text:'Persegi',bg:'#D8F3DC',color:'#2D6A4F'},
+      {id:'c2',text:'Persegi Panjang',bg:'#FFF3E0',color:'#F77F00'},
+      {id:'c3',text:'Segitiga Sama Sisi',bg:'#E3F2FD',color:'#1565C0'},
+      {id:'c4',text:'Layang-layang',bg:'#FFEBEE',color:'#E63946'}
+    ], zones:[
+      {id:'z1',label:'4 sumbu simetri',correct:['c1']},
+      {id:'z2',label:'2 sumbu simetri',correct:['c2']},
+      {id:'z3',label:'3 sumbu simetri',correct:['c3']},
+      {id:'z4',label:'1 sumbu simetri',correct:['c4']}
+    ], h:'Persegi=4, Persegi Panjang=2, Segitiga Sama Sisi=3, Layang-layang=1.'},
+    {t:'r', q:'Apakah persegi panjang memiliki sumbu simetri pada diagonalnya?', o:['Ya, kedua diagonalnya','Ya, salah satu diagonalnya','Tidak','Hanya diagonal yang panjang'], a:2, h:'Diagonal persegi panjang BUKAN sumbu simetri. Sumbu simetrinya hanya garis tengahnya.'},
+    {t:'c', q:'Bangun yang memiliki tepat 2 sumbu simetri? (pilih lebih dari satu)', o:['Persegi panjang','Belah ketupat','Persegi','Layang-layang'], a:[0,1], h:'Persegi panjang = 2, Belah ketupat = 2. Persegi = 4, Layang-layang = 1.'},
+    {t:'r', q:'Jumlah sumbu simetri trapesium sembarang adalah...', o:['0','1','2','4'], a:0, h:'Trapesium sembarang tidak memiliki sumbu simetri (0).'},
+    {t:'t', q:'Berapa jumlah sumbu simetri persegi?', a:'4', alt:['empat'], h:'Persegi memiliki 4 sumbu simetri.'},
+    {t:'d', q:'Segitiga yang memiliki 3 sumbu simetri adalah...', o:['-- Pilih --','Segitiga sama kaki','Segitiga sembarang','Segitiga sama sisi','Segitiga siku-siku'], a:'Segitiga sama sisi', h:'Hanya segitiga sama sisi yang memiliki 3 sumbu simetri.'},
+    {t:'dd', q:'Kelompokkan bangun berdasarkan jumlah sumbu simetrinya!', items:[
+      {id:'d1',text:'Jajar genjang',bg:'#FFEBEE',color:'#E63946'},
+      {id:'d2',text:'Persegi',bg:'#D8F3DC',color:'#2D6A4F'},
+      {id:'d3',text:'Layang-layang',bg:'#FFF3E0',color:'#F77F00'},
+      {id:'d4',text:'Segitiga sembarang',bg:'#FFEBEE',color:'#E63946'},
+      {id:'d5',text:'Belah ketupat',bg:'#E3F2FD',color:'#1565C0'}
+    ], zones:[
+      {id:'z1',label:'0 sumbu simetri',correct:['d1','d4']},
+      {id:'z2',label:'1 sumbu simetri',correct:['d3']},
+      {id:'z3',label:'2 sumbu simetri',correct:['d5']},
+      {id:'z4',label:'4 sumbu simetri',correct:['d2']}
+    ], h:'Jajar genjang & segitiga sembarang=0, Layang-layang=1, Belah ketupat=2, Persegi=4.'}
+  ],
+
+  ciri: [
+    {t:'r', q:'Persegi memiliki berapa sisi yang sama panjang?', o:['2','3','4','Tidak ada'], a:2, h:'Persegi memiliki 4 sisi yang sama panjang.'},
+    {t:'c', q:'Ciri-ciri persegi panjang? (pilih lebih dari satu)', o:['Sisi berhadapan sama panjang','Keempat sudut siku-siku','Keempat sisi sama panjang','Diagonal sama panjang'], a:[0,1,3], h:'Persegi panjang: sisi berhadapan sama, 4 sudut siku-siku, diagonal sama panjang. Bukan semua sisi sama panjang!'},
+    {t:'d', q:'Jumlah sisi trapesium adalah...', o:['-- Pilih --','3','4','5','6'], a:'4', h:'Trapesium memiliki 4 sisi (termasuk segiempat).'},
+    {t:'t', q:'Berapa jumlah sudut pada jajar genjang?', a:'4', alt:['empat'], h:'Jajar genjang adalah segiempat, jadi memiliki 4 sudut.'},
+    {t:'r', q:'Bangun yang keempat sisinya sama panjang DAN keempat sudutnya siku-siku disebut...', o:['Persegi panjang','Belah ketupat','Persegi','Layang-layang'], a:2, h:'Persegi: 4 sisi sama panjang + 4 sudut siku-siku.'},
+    {t:'c', q:'Ciri-ciri belah ketupat? (pilih lebih dari satu)', o:['Keempat sisi sama panjang','Diagonal saling tegak lurus','Sudut berhadapan sama besar','Keempat sudut siku-siku'], a:[0,1,2], h:'Belah ketupat: 4 sisi sama, diagonal tegak lurus, sudut berhadapan sama. Sudutnya TIDAK selalu siku-siku!'},
+    {t:'r', q:'Layang-layang memiliki berapa pasang sisi berdekatan yang sama panjang?', o:['0','1','2','4'], a:1, h:'Layang-layang memiliki 2 pasang sisi berdekatan yang sama panjang (1 pasang = 2 sisi).'},
+    {t:'d', q:'Bangun datar yang memiliki tepat 1 pasang sisi sejajar adalah...', o:['-- Pilih --','Jajar genjang','Persegi panjang','Trapesium','Belah ketupat'], a:'Trapesium', h:'Trapesium memiliki tepat 1 pasang sisi sejajar.'},
+    {t:'t', q:'Berapa jumlah diagonal pada persegi?', a:'2', alt:['dua'], h:'Persegi memiliki 2 diagonal.'},
+    {t:'c', q:'Ciri-ciri lingkaran? (pilih lebih dari satu)', o:['Tidak memiliki sudut','Memiliki jari-jari','Memiliki diameter','Memiliki sisi'], a:[0,1,2], h:'Lingkaran: tidak punya sudut, punya jari-jari & diameter. Tidak punya sisi!'},
+    {t:'r', q:'Pada jajar genjang, sisi-sisi yang berhadapan bersifat...', o:['Tegak lurus','Sejajar dan sama panjang','Tidak sama panjang','Berpotongan'], a:1, h:'Sisi berhadapan pada jajar genjang sejajar dan sama panjang.'},
+    {t:'d', q:'Bangun yang keempat sisinya sama panjang tetapi sudutnya bukan siku-siku disebut...', o:['-- Pilih --','Persegi','Persegi panjang','Belah ketupat','Jajar genjang'], a:'Belah ketupat', h:'Belah ketupat: 4 sisi sama panjang tapi sudutnya miring (bukan siku-siku).'},
+    {t:'t', q:'Persegi panjang memiliki berapa sisi?', a:'4', alt:['empat'], h:'Persegi panjang adalah segiempat, memiliki 4 sisi.'},
+    {t:'c', q:'Ciri-ciri trapesium? (pilih lebih dari satu)', o:['Memiliki 4 sisi','Memiliki tepat 1 pasang sisi sejajar','Keempat sudut siku-siku','Merupakan segiempat'], a:[0,1,3], h:'Trapesium: 4 sisi, 1 pasang sisi sejajar, segiempat. Tidak selalu sudut siku-siku!'},
+    {t:'r', q:'Ciri khas persegi yang TIDAK dimiliki persegi panjang adalah...', o:['4 sudut siku-siku','Diagonal sama panjang','Keempat sisi sama panjang','Sisi berhadapan sama panjang'], a:2, h:'Persegi memiliki 4 sisi sama panjang, sedangkan persegi panjang hanya sisi berhadapan yang sama.'},
+    {t:'dd', q:'Pasangkan bangun datar dengan cirinya!', items:[
+      {id:'e1',text:'Persegi',bg:'#D8F3DC',color:'#2D6A4F'},
+      {id:'e2',text:'Layang-layang',bg:'#FFF3E0',color:'#F77F00'},
+      {id:'e3',text:'Jajar genjang',bg:'#E3F2FD',color:'#1565C0'},
+      {id:'e4',text:'Lingkaran',bg:'#FFEBEE',color:'#E63946'}
+    ], zones:[
+      {id:'z1',label:'4 sisi sama, 4 sudut siku-siku',correct:['e1']},
+      {id:'z2',label:'2 pasang sisi berdekatan sama',correct:['e2']},
+      {id:'z3',label:'Sisi berhadapan sejajar & sama',correct:['e3']},
+      {id:'z4',label:'Tidak ada sudut & sisi',correct:['e4']}
+    ], h:'Persegi=4 sisi sama+siku-siku, Layang-layang=2 pasang berdekatan, Jajar genjang=sisi berhadapan sejajar, Lingkaran=tanpa sudut&sisi.'},
+    {t:'t', q:'Berapa jumlah sisi pada segitiga?', a:'3', alt:['tiga'], h:'Segitiga memiliki 3 sisi.'},
+    {t:'c', q:'Bangun yang termasuk segiempat? (pilih lebih dari satu)', o:['Persegi','Segitiga','Trapesium','Lingkaran','Persegi panjang'], a:[0,2,4], h:'Segiempat = bangun dengan 4 sisi. Persegi, trapesium, persegi panjang adalah segiempat.'},
+    {t:'d', q:'Bangun yang diagonalnya saling tegak lurus dan salah satunya membagi dua sama panjang adalah...', o:['-- Pilih --','Persegi panjang','Jajar genjang','Layang-layang','Persegi'], a:'Layang-layang', h:'Layang-layang: diagonal saling tegak lurus, salah satu diagonal membagi dua sama panjang.'},
+    {t:'dd', q:'Kelompokkan berdasarkan jumlah diagonalnya!', items:[
+      {id:'f1',text:'Persegi',bg:'#D8F3DC',color:'#2D6A4F'},
+      {id:'f2',text:'Segitiga',bg:'#FFF3E0',color:'#F77F00'},
+      {id:'f3',text:'Belah ketupat',bg:'#E3F2FD',color:'#1565C0'},
+      {id:'f4',text:'Persegi Panjang',bg:'#FFEBEE',color:'#E63946'}
+    ], zones:[
+      {id:'z1',label:'Tidak punya diagonal',correct:['f2']},
+      {id:'z2',label:'2 diagonal sama panjang',correct:['f1','f4']},
+      {id:'z3',label:'2 diagonal tidak sama panjang',correct:['f3']}
+    ], h:'Segitiga=tidak punya diagonal, Persegi & Persegi Panjang=2 diagonal sama panjang, Belah ketupat=2 diagonal tidak sama panjang.'}
+  ],
+
+  luas: [
+    {t:'r', q:'Rumus luas persegi adalah...', o:['4 × s','s × s','2 × (p + l)','½ × a × t'], a:1, h:'Luas persegi = sisi × sisi (s × s).'},
+    {t:'r', q:'Rumus keliling persegi panjang adalah...', o:['p × l','2 × (p + l)','4 × s','½ × a × t'], a:1, h:'Keliling persegi panjang = 2 × (panjang + lebar).'},
+    {t:'t', q:'Luas persegi dengan sisi 5 cm adalah ... cm²', a:'25', alt:['25 cm²'], h:'Luas persegi = s × s = 5 × 5 = 25 cm².'},
+    {t:'d', q:'Rumus luas persegi panjang adalah...', o:['-- Pilih --','s × s','p × l','½ × a × t','4 × s'], a:'p × l', h:'Luas persegi panjang = panjang × lebar.'},
+    {t:'t', q:'Keliling persegi dengan sisi 8 cm adalah ... cm', a:'32', alt:['32 cm'], h:'Keliling persegi = 4 × s = 4 × 8 = 32 cm.'},
+    {t:'c', q:'Rumus yang benar untuk keliling persegi? (pilih lebih dari satu)', o:['4 × s','s + s + s + s','2 × s','s × s'], a:[0,1], h:'Keliling persegi = 4×s atau s+s+s+s (jumlah semua sisi). 2×s dan s×s salah.'},
+    {t:'t', q:'Luas persegi panjang dengan panjang 10 cm dan lebar 6 cm adalah ... cm²', a:'60', alt:['60 cm²'], h:'Luas = p × l = 10 × 6 = 60 cm².'},
+    {t:'r', q:'Keliling persegi panjang dengan p = 12 cm dan l = 8 cm adalah...', o:['20 cm','40 cm','96 cm','32 cm'], a:1, h:'Keliling = 2×(p+l) = 2×(12+8) = 2×20 = 40 cm.'},
+    {t:'d', q:'Rumus luas segitiga adalah...', o:['-- Pilih --','a × t','½ × a × t','2 × a × t','a × t × ½ × 2'], a:'½ × a × t', h:'Luas segitiga = ½ × alas × tinggi.'},
+    {t:'t', q:'Luas segitiga dengan alas 10 cm dan tinggi 6 cm adalah ... cm²', a:'30', alt:['30 cm²'], h:'Luas = ½ × a × t = ½ × 10 × 6 = 30 cm².'},
+    {t:'r', q:'Keliling segitiga sama sisi dengan sisi 7 cm adalah...', o:['14 cm','21 cm','28 cm','49 cm'], a:1, h:'Keliling = 3 × sisi = 3 × 7 = 21 cm.'},
+    {t:'c', q:'Rumus luas bangun datar yang benar? (pilih lebih dari satu)', o:['Luas persegi = s × s','Luas persegi panjang = p × l','Luas segitiga = a × t','Luas persegi = 4 × s'], a:[0,1], h:'Luas persegi = s×s ✓, Luas persegi panjang = p×l ✓. Luas segitiga = ½×a×t (bukan a×t). 4×s itu keliling.'},
+    {t:'t', q:'Keliling persegi panjang dengan p = 15 cm dan l = 5 cm adalah ... cm', a:'40', alt:['40 cm'], h:'Keliling = 2×(p+l) = 2×(15+5) = 2×20 = 40 cm.'},
+    {t:'d', q:'Satuan untuk luas bangun datar adalah...', o:['-- Pilih --','cm','cm² (kuadrat)','m','km'], a:'cm² (kuadrat)', h:'Luas menggunakan satuan kuadrat/², seperti cm², m².'},
+    {t:'r', q:'Luas persegi dengan keliling 20 cm adalah...', o:['25 cm²','16 cm²','20 cm²','100 cm²'], a:0, h:'Keliling 20 cm → sisi = 20÷4 = 5 cm. Luas = 5×5 = 25 cm².'},
+    {t:'t', q:'Keliling segitiga dengan sisi 5 cm, 7 cm, dan 8 cm adalah ... cm', a:'20', alt:['20 cm'], h:'Keliling segitiga = jumlah semua sisi = 5+7+8 = 20 cm.'},
+    {t:'d', q:'Jika luas persegi 49 cm², maka sisinya adalah...', o:['-- Pilih --','6 cm','7 cm','8 cm','9 cm'], a:'7 cm', h:'Luas = s×s → 49 = s×s → s = 7 cm (karena 7×7=49).'},
+    {t:'c', q:'Manakah yang benar tentang keliling? (pilih lebih dari satu)', o:['Keliling = jumlah semua sisi','Keliling persegi = 4 × s','Keliling memiliki satuan panjang (cm, m)','Keliling persegi panjang = p × l'], a:[0,1,2], h:'Keliling = jumlah sisi ✓, K persegi = 4s ✓, satuan panjang ✓. p×l itu LUAS bukan keliling!'},
+    {t:'r', q:'Luas persegi panjang yang kelilingnya 30 cm dan panjangnya 10 cm adalah...', o:['20 cm²','25 cm²','50 cm²','100 cm²'], a:2, h:'K=2(p+l)→30=2(10+l)→15=10+l→l=5. Luas=10×5=50 cm².'},
+    {t:'dd', q:'Pasangkan bangun dengan rumus luasnya!', items:[
+      {id:'g1',text:'Persegi',bg:'#D8F3DC',color:'#2D6A4F'},
+      {id:'g2',text:'Persegi Panjang',bg:'#FFF3E0',color:'#F77F00'},
+      {id:'g3',text:'Segitiga',bg:'#E3F2FD',color:'#1565C0'},
+      {id:'g4',text:'Belah Ketupat',bg:'#FFEBEE',color:'#E63946'}
+    ], zones:[
+      {id:'z1',label:'s × s',correct:['g1']},
+      {id:'z2',label:'p × l',correct:['g2']},
+      {id:'z3',label:'½ × a × t',correct:['g3']},
+      {id:'z4',label:'½ × d₁ × d₂',correct:['g4']}
+    ], h:'Persegi=s×s, Persegi Panjang=p×l, Segitiga=½×a×t, Belah Ketupat=½×d1×d2.'}
+  ],
+
+  segitiga: [
+    {t:'r', q:'Segitiga yang ketiga sisinya sama panjang disebut...', o:['Segitiga sama kaki','Segitiga sembarang','Segitiga sama sisi','Segitiga siku-siku'], a:2, h:'Segitiga sama sisi: 3 sisi sama panjang.'},
+    {t:'r', q:'Segitiga yang memiliki dua sisi sama panjang disebut...', o:['Segitiga sama sisi','Segitiga sama kaki','Segitiga sembarang','Segitiga tumpul'], a:1, h:'Segitiga sama kaki: 2 sisi sama panjang.'},
+    {t:'d', q:'Segitiga yang ketiga sisinya berbeda panjang disebut...', o:['-- Pilih --','Sama sisi','Sama kaki','Sembarang','Siku-siku'], a:'Sembarang', h:'Segitiga sembarang: 3 sisi berbeda panjang.'},
+    {t:'c', q:'Jenis segitiga berdasarkan sisinya? (pilih lebih dari satu)', o:['Sama sisi','Sama kaki','Siku-siku','Sembarang'], a:[0,1,3], h:'Berdasarkan sisi: sama sisi, sama kaki, sembarang. Siku-siku berdasarkan sudut.'},
+    {t:'r', q:'Segitiga yang memiliki satu sudut 90° disebut...', o:['Segitiga lancip','Segitiga siku-siku','Segitiga tumpul','Segitiga sembarang'], a:1, h:'Segitiga siku-siku memiliki tepat 1 sudut 90°.'},
+    {t:'d', q:'Segitiga yang semua sudutnya kurang dari 90° disebut...', o:['-- Pilih --','Lancip','Siku-siku','Tumpul','Sembarang'], a:'Lancip', h:'Segitiga lancip: semua sudutnya < 90°.'},
+    {t:'t', q:'Berapa besar setiap sudut pada segitiga sama sisi?', a:'60', alt:['60°'], h:'Segitiga sama sisi: 180° ÷ 3 = 60° setiap sudutnya.'},
+    {t:'c', q:'Jenis segitiga berdasarkan sudutnya? (pilih lebih dari satu)', o:['Lancip','Siku-siku','Sama kaki','Tumpul'], a:[0,1,3], h:'Berdasarkan sudut: lancip, siku-siku, tumpul. Sama kaki berdasarkan sisi.'},
+    {t:'r', q:'Segitiga dengan sudut 100° termasuk segitiga...', o:['Lancip','Siku-siku','Tumpul','Sama sisi'], a:2, h:'Sudut 100° > 90°, jadi termasuk segitiga tumpul.'},
+    {t:'t', q:'Jumlah ketiga sudut dalam segitiga adalah ...°', a:'180', alt:['180°'], h:'Jumlah ketiga sudut dalam segitiga SELALU = 180°.'},
+    {t:'d', q:'Segitiga dengan sisi 3 cm, 3 cm, dan 5 cm termasuk segitiga...', o:['-- Pilih --','Sama sisi','Sama kaki','Sembarang','Siku-siku'], a:'Sama kaki', h:'2 sisi sama (3 cm dan 3 cm), 1 sisi beda = segitiga sama kaki.'},
+    {t:'r', q:'Segitiga siku-siku memiliki berapa sudut siku-siku?', o:['0','1','2','3'], a:1, h:'Segitiga siku-siku memiliki tepat 1 sudut siku-siku (90°).'},
+    {t:'c', q:'Ciri segitiga sama sisi? (pilih lebih dari satu)', o:['3 sisi sama panjang','3 sudut sama besar','Setiap sudut 60°','Memiliki 1 sudut siku-siku'], a:[0,1,2], h:'Sama sisi: 3 sisi sama, 3 sudut sama (60°), tidak punya sudut siku-siku.'},
+    {t:'t', q:'Pada segitiga sama kaki, sudut yang sama besar terletak di hadapan sisi yang ...', a:'sama panjang', alt:['Sama panjang','sama'], h:'Pada segitiga sama kaki, sudut di hadapan sisi yang sama panjang juga sama besar.'},
+    {t:'r', q:'Segitiga dengan sudut 50°, 60°, dan 70° termasuk segitiga...', o:['Sama sisi','Siku-siku','Lancip','Tumpul'], a:2, h:'Semua sudut < 90° (50°, 60°, 70°), jadi segitiga lancip.'},
+    {t:'d', q:'Segitiga dengan sisi 4 cm, 5 cm, dan 6 cm termasuk segitiga...', o:['-- Pilih --','Sama sisi','Sama kaki','Sembarang','Siku-siku'], a:'Sembarang', h:'3 sisi berbeda panjang (4, 5, 6) = segitiga sembarang.'},
+    {t:'c', q:'Segitiga yang termasuk segitiga lancip? (pilih lebih dari satu)', o:['Segitiga sama sisi','Segitiga siku-siku','Segitiga dengan sudut 80°-50°-50°','Segitiga dengan sudut 100°-40°-40°'], a:[0,2], h:'Sama sisi (semua 60°) = lancip ✓. 80°-50°-50° semua < 90° = lancip ✓. Siku-siku & 100° bukan lancip.'},
+    {t:'t', q:'Pada segitiga sama kaki dengan sudut puncak 40°, besar sudut alasnya adalah ...°', a:'70', alt:['70°'], h:'Sudut alas = (180° - 40°) ÷ 2 = 140° ÷ 2 = 70°.'},
+    {t:'r', q:'Segitiga yang memiliki satu sudut lebih dari 90° disebut segitiga...', o:['Lancip','Siku-siku','Tumpul','Sama sisi'], a:2, h:'Segitiga tumpul memiliki 1 sudut > 90°.'},
+    {t:'dd', q:'Pasangkan segitiga dengan ciri-cirinya!', items:[
+      {id:'h1',text:'Sama Sisi',bg:'#D8F3DC',color:'#2D6A4F'},
+      {id:'h2',text:'Sama Kaki',bg:'#FFF3E0',color:'#F77F00'},
+      {id:'h3',text:'Siku-siku',bg:'#E3F2FD',color:'#1565C0'},
+      {id:'h4',text:'Sembarang',bg:'#FFEBEE',color:'#E63946'}
+    ], zones:[
+      {id:'z1',label:'3 sisi sama panjang',correct:['h1']},
+      {id:'z2',label:'2 sisi sama panjang',correct:['h2']},
+      {id:'z3',label:'1 sudut 90°',correct:['h3']},
+      {id:'z4',label:'3 sisi berbeda',correct:['h4']}
+    ], h:'Sama sisi=3 sisi sama, Sama kaki=2 sisi sama, Siku-siku=1 sudut 90°, Sembarang=3 sisi beda.'}
+  ]
+};
+
+// ===== STATE =====
+let ddState = {}; // Menyimpan state drag-and-drop per soal
+let submitted = {}; // Menyimpan status section yang sudah di-submit
+
+// ===== RENDERING FUNGSI =====
+function renderQuestions(sectionId) {
+  const container = document.getElementById(`questions-${sectionId}`);
+  const questions = questionsData[sectionId];
+  if (!questions) return;
+  
+  let html = '';
+  questions.forEach((q, i) => {
+    const num = i + 1;
+    const qId = `${sectionId}-${i}`;
+    html += `<div class="q-item" id="qi-${qId}">`;
+    html += `<div class="q-feedback" id="fb-${qId}"></div>`;
+    html += `<div class="q-text"><span class="q-num">${num}</span><span>${q.q}</span></div>`;
+    
+    switch(q.t) {
+      case 'r': // Radio button
+        html += `<div class="q-radio">`;
+        q.o.forEach((opt, oi) => {
+          html += `<label><input type="radio" name="radio-${qId}" value="${oi}"><span>${opt}</span></label>`;
+        });
+        html += `</div>`;
+        break;
+      case 'd': // Dropdown
+        html += `<select class="q-select" id="sel-${qId}">`;
+        q.o.forEach(opt => {
+          html += `<option value="${opt}">${opt}</option>`;
+        });
+        html += `</select>`;
+        break;
+      case 't': // Text input
+        html += `<input type="text" class="q-input" id="txt-${qId}" placeholder="Jawaban..." autocomplete="off">`;
+        break;
+      case 'c': // Checkbox
+        html += `<div class="q-checkbox">`;
+        q.o.forEach((opt, oi) => {
+          html += `<label><input type="checkbox" name="chk-${qId}" value="${oi}"><span>${opt}</span></label>`;
+        });
+        html += `</div>`;
+        break;
+      case 'dd': // Drag and Drop
+        html += renderDragDrop(qId, q);
+        break;
+    }
+    
+    html += `<div class="hint-box" id="hint-${qId}"><i class="fas fa-lightbulb mr-1"></i> ${q.h}</div>`;
+    html += `</div>`;
+  });
+  
+  container.innerHTML = html;
+  
+  // Inisialisasi event listener drag-and-drop setelah elemen dirender
+  questions.forEach((q, i) => {
+    if (q.t === 'dd') {
+      initDragDrop(`${sectionId}-${i}`, q);
+    }
+  });
+}
+
+function renderDragDrop(qId, q) {
+  let html = `<div class="dd-container" id="ddc-${qId}">`;
+  html += `<p class="dd-info"><i class="fas fa-hand-pointer mr-1"></i>Klik item lalu klik zona tujuan, atau seret item ke zona yang benar. Klik item di zona untuk mengeluarkannya.</p>`;
+  
+  // Item Pool
+  html += `<div class="dd-items" id="ddi-${qId}">`;
+  q.items.forEach((item, ii) => {
+    html += `<div class="dd-item" id="dditem-${qId}-${item.id}" data-qid="${qId}" data-itemid="${item.id}" draggable="true" style="background:${item.bg};color:${item.color};">${item.text}</div>`;
+  });
+  html += `</div>`;
+  
+  // Drop Zones
+  html += `<div class="dd-zones">`;
+  q.zones.forEach(zone => {
+    html += `<div class="dd-zone" id="ddzone-${qId}-${zone.id}" data-qid="${qId}" data-zoneid="${zone.id}">`;
+    html += `<div class="dd-zone-label">${zone.label}</div>`;
+    html += `<div class="dd-zone-slots" id="ddslots-${qId}-${zone.id}"></div>`;
+    html += `</div>`;
+  });
+  html += `</div>`;
+  
+  html += `</div>`;
+  return html;
+}
+
+// ===== DRAG & DROP LOGIC =====
+function initDragDrop(qId, q) {
+  ddState[qId] = {
+    selected: null,
+    placements: {}, // itemId -> zoneId
+    items: q.items,
+    zones: q.zones
+  };
+  
+  // Event untuk item yang bisa diseret
+  q.items.forEach(item => {
+    const el = document.getElementById(`dditem-${qId}-${item.id}`);
+    if (!el) return;
+    
+    el.addEventListener('dragstart', (e) => {
+      e.dataTransfer.setData('text/plain', item.id);
+      e.dataTransfer.setData('qid', qId);
+      el.style.opacity = '0.5';
+    });
+    el.addEventListener('dragend', () => {
+      el.style.opacity = '1';
+    });
+    
+    // Klik untuk memilih item
+    el.addEventListener('click', () => {
+      document.querySelectorAll(`#ddi-${qId} .dd-item`).forEach(x => x.classList.remove('selected'));
+      el.classList.add('selected');
+      ddState[qId].selected = item.id;
+    });
+  });
+  
+  // Event untuk zona drop
+  q.zones.forEach(zone => {
+    const zoneEl = document.getElementById(`ddzone-${qId}-${zone.id}`);
+    if (!zoneEl) return;
+    
+    zoneEl.addEventListener('dragover', (e) => {
+      e.preventDefault();
+      zoneEl.classList.add('dragover');
+    });
+    zoneEl.addEventListener('dragleave', () => {
+      zoneEl.classList.remove('dragover');
+    });
+    zoneEl.addEventListener('drop', (e) => {
+      e.preventDefault();
+      zoneEl.classList.remove('dragover');
+      const itemId = e.dataTransfer.getData('text/plain');
+      placeItemInZone(qId, itemId, zone.id);
+    });
+    
+    // Klik zona untuk menaruh item yang dipilih
+    zoneEl.addEventListener('click', () => {
+      if (ddState[qId].selected) {
+        placeItemInZone(qId, ddState[qId].selected, zone.id);
+        ddState[qId].selected = null;
+        document.querySelectorAll(`#ddi-${qId} .dd-item`).forEach(x => x.classList.remove('selected'));
+      }
+    });
+  });
+}
+
+function placeItemInZone(qId, itemId, zoneId) {
+  const state = ddState[qId];
+  if (!state) return;
+  
+  // Jika item sudah ada di zona lain, hapus dulu
+  if (state.placements[itemId]) {
+    const oldZoneId = state.placements[itemId];
+    const oldSlots = document.getElementById(`ddslots-${qId}-${oldZoneId}`);
+    if (oldSlots) {
+      const existing = oldSlots.querySelector(`[data-itemid="${itemId}"]`);
+      if (existing) existing.remove();
+    }
+  }
+  
+  state.placements[itemId] = zoneId;
+  
+  // Tandai item asli di pool sebagai sudah ditempatkan
+  const srcItem = document.getElementById(`dditem-${qId}-${itemId}`);
+  if (srcItem) srcItem.classList.add('placed');
+  
+  // Buat chip item di dalam zona
+  const slots = document.getElementById(`ddslots-${qId}-${zoneId}`);
+  if (slots) {
+    const existing = slots.querySelector(`[data-itemid="${itemId}"]`);
+    if (existing) existing.remove();
+    
+    const itemData = state.items.find(it => it.id === itemId);
+    const chip = document.createElement('div');
+    chip.className = 'dd-zone-item';
+    chip.dataset.itemid = itemId;
+    chip.style.background = itemData.bg;
+    chip.style.color = itemData.color;
+    chip.textContent = itemData.text;
+    
+    // Klik chip di zona untuk mengembalikan ke pool
+    chip.addEventListener('click', (e) => {
+      e.stopPropagation();
+      removeItemFromZone(qId, itemId);
+    });
+    slots.appendChild(chip);
+  }
+}
+
+function removeItemFromZone(qId, itemId) {
+  const state = ddState[qId];
+  if (!state || !state.placements[itemId]) return;
+  
+  const zoneId = state.placements[itemId];
+  delete state.placements[itemId];
+  
+  // Hapus chip dari zona
+  const slots = document.getElementById(`ddslots-${qId}-${zoneId}`);
+  if (slots) {
+    const chip = slots.querySelector(`[data-itemid="${itemId}"]`);
+    if (chip) chip.remove();
+  }
+  
+  // Kembalikan item di pool ke tampilan normal
+  const srcItem = document.getElementById(`dditem-${qId}-${itemId}`);
+  if (srcItem) srcItem.classList.remove('placed');
+}
+
+// PART 3: Fungsi Pengecekan Jawaban & Inisialisasi Akan Dilanjutkan...
 </script>
 </body>
 </html>
